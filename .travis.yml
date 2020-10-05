@@ -9,7 +9,7 @@ services :
 # necessary files has not been copied to production
 # First build the image
 before_install :
-  - docker build -t aishwaryaarun/react-test -f ./client/Dockerfile.dev
+  - docker build -t aishwaryaarun/react-test -f ./client/Dockerfile.dev ./client
 
 # Use above image to test (overrise command - npm test)
 script :
