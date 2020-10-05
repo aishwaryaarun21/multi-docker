@@ -1,0 +1,32 @@
+# super user required
+sudo : required
+
+# mention dependencies
+services : 
+  - docker
+
+# Test before deploying to Prod use dev Dockerfile because at this stage the 
+# necessary files has not been copied to production
+# First build the image
+before_install :
+  - docker build -t aishwaryaarun/react-test -f ./client/Dockerfile.dev
+
+# Use above image to test (overrise command - npm test)
+script :
+  - docker run aishwaryaarun/react-test npm test -- --coverage
+
+
+after_install :
+# Once test is successfull create images(prodcution images) for all the projects
+  - docker build -t aishwaryaarun/multi-client ./client
+  - docker build -t aishwaryaarun/multi-nginx ./nginx
+  - docker build -t aishwaryaarun/multi-server ./server
+  - docker build -t aishwaryaarun/multi-worker ./worker
+# To push the aboves images to Doocker hub first you have to connect to docker huvb cli
+# Connect to docker cli
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+# Push above images to docker hub
+  - docker push aishwaryaarun/multi-client
+  - docker push aishwaryaarun/multi-nginx
+  - docker push aishwaryaarun/multi-server
+  - docker push aishwaryaarun/multi-worker
