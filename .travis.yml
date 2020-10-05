@@ -15,8 +15,7 @@ before_install :
 script :
   - docker run aishwaryaarun/react-test npm test -- --coverage
 
-
-after_install :
+after_success :
 # Once test is successfull create images(prodcution images) for all the projects
   - docker build -t aishwaryaarun/multi-client ./client
   - docker build -t aishwaryaarun/multi-nginx ./nginx
